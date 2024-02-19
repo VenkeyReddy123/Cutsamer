@@ -44,9 +44,9 @@ const Suggest = () => {
                     return (
                         <div key={ind} className='col-sm-4 col-md-4' style={{ height: '300px',  }}>
                             <div className='card' style={{borderRadius:'50px',background:'#F5F7FA'}}>
-                                <div className='card-body'>
-                                    <img src={e.ImageUrl} alt={""} height={'120px'} width={'100%'} style={{borderRadius:'50px'}} />
-                                    <span style={{position:'relative',top:'-23px',backgroundColor:'green',display:'inline-block',width:"60px",color:'white'}}>{(Math.random() * (5 - 4) + 3).toFixed(1)}<i class="fa-solid fa-star"></i></span>
+                                <div className='card-body' style={{}}>
+                                    <img src={e.ImageUrl} alt={""} height={'120px'} width={'100%'} style={{borderRadius:'50px',position:'relative'}} />
+                                    <span style={{position:'relative',top:'-20 px',backgroundColor:'green',display:'inline-block',width:"60px",color:'white'}}>{(Math.random() * (5 - 4) + 3).toFixed(1)}<i class="fa-solid fa-star"></i></span>
 
                                 </div>
                                 <div>

@@ -35,14 +35,16 @@ const ProductDisplay = () => {
 
     }, [])
     const AddCard=(e)=>{
+        const email=localStorage.getItem('email')
        const Data={
-            "Custamer_Name":localStorage.getItem('email'),
+        
+            "Custamer_Name":email,
             "Product_Name":e.Product_Name.id
         }
          axios.post("http://127.0.0.1:8000/AddCardDetails/",Data).then((e)=>{
-            console.log('Success')
+            alert('Addee Success')
          }).catch((e)=>{
-            alert('please Try Again Later')
+             alert('Already Added/Network Issuse Please Try Again lAtes')
          })
     }
     return (
@@ -92,8 +94,10 @@ const ProductDisplay = () => {
             <div>
                 <div className='d-md-flex d-xl-flex  flex-md-row  flex-xl-row mt-5 ml-2 mr-2 ' style={{ overflowX: 'hidden' }}>
 
-                    <div className='col-md-6 col-lg-6 card border border-success mt-2' style={{ height: '400px', marginBottom: '30px' }}>
+                    <div className='col-md-6 col-lg-6 card border  mt-2' style={{ height: '400px', marginBottom: '30px' }}>
+                        <div className='container text-center mt-2'>
                         <img src={Data2.ImageUrl} alt={Data2.Product_Name.Product_Name} height={'85%'} />
+                        </div>
                         <div className='d-flex flex-row justify-content-center mt-2  '>
                             <button onClick={() => { AddCard(Data2)}} className='col-5 ml-auto p-2 border-danger text-danger d-flex flex-row justify-content-around bg-light ' style={{ borderRadius: '50px' }}> <i class="fa-solid fa-heart-circle-check mt-1"></i><span>Add To Card</span></button>
                             <button onClick={() => { navigate('/Add',{state:{Product:Data2}}) }} className='col-5 ml-auto border-danger text-danger d-flex flex-row justify-content-around' style={{ borderRadius: '50px' }}><i className="fa-solid fa-cart-shopping mt-2"></i><span className='mt-1'>Buy Now</span></button>
