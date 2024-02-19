@@ -1,12 +1,69 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Mobile_Data } from './Data/Mobile_Data'
+import { useNavigate } from 'react-router-dom'
 
+
+
+import './Filter.css'
+import axios from 'axios'
 const Product_Filters = () => {
+    const navigate = useNavigate()
     const Data = Mobile_Data
+    const [Data2,setData2]=useState()
+    useEffect(() => {
+        axios.get("http://127.0.0.1:8000/ProductDispalyView/").then((d) => {   
+                  setData2(d.data)
+                  console.log('hi')
+                  console.log(d.data)
+        }).catch((e) => {
+            // alert('Please Try AGian Later Somthing Eroor')
+        })
+
+    }, [])
     return (
-        <>
-            
-            <div className='d-flex flex-row' style={{ height: '100vh', background: '#F5F7FA',overflowX:'hidden' }}>
+          
+        <> 
+            <nav>
+                <div className='d-flex flex-row justify-content-between col-12 flex-wrap' style={{ background: '#F5F7FA', overflowX: 'hidden' }}>
+                    <div className='d-md-col-1'>
+                        <h5 className='p-3'>ECommer</h5>
+                    </div>
+                    <div className='p-2 d-col-7'>
+                        <input type="text" className='form-control' placeholder='Search.....' style={{ borderRadius: '50px' }} />
+                    </div>
+                    <div className='flex flex-row justify-content-between p-2 d-md-2 '>
+                        <i style={{ fontSize: '25px' }} className="fa-solid fa-magnifying-glass mr-2 p-2 text-dark"></i>
+                        <i className="fa-solid fa-cart-shopping p-2 text=dark" style={{ fontSize: '25px' }}></i>
+                    </div>
+                </div>
+            </nav>
+            {/*  */}
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">Home Page</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse " id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" onClick={() => { navigate('/Home') }}>Home<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" onClick={() => { navigate('/Product') }} >Products</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" onClick={() => { navigate('/Addcard') }}>Addcards</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" onClick={() => { navigate('/Orders') }}>Orders</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            {/*  */}
+            <div className='d-flex flex-row' style={{ height: '100vh', background: '#F5F7FA', overflowX: 'hidden' }}>
                 <sidebar className='d-none d-md-block' style={{ height: '100%', width: '25%', overflowY: 'auto', background: '#F5F7FA' }}>
                     <h6 >Price Ranges</h6>
                     <form className='ml-2'>
@@ -183,27 +240,21 @@ const Product_Filters = () => {
                         </div>
                         <input type="submit" value={'Search'} className='btn btn-danger mt-1 col-11 shadow-lg' />
                     </form>
-
-
-
                 </sidebar>
                 <div className='container ml-3 mt-3' style={{ overflowY: 'auto' }}>
                     <div className='row'>
-                        {Data.map((e) => {
+                        {Data2 && Data2.map((e) => {
                             return (
                                 <>
                                     <div className='model col-sm-6 col-md-4 col-lg-3 mt-3' style={{ display: 'flex', flexWrap: 'wrap' }}>
-                                        <div class="card" style={{ display: 'flex', flexDirection: 'column', height: '100%',width:'100%',background:'#F5F7FA' }}>
-                                            <img src={e.imageURL[0]} class="card-img-top" height="100px" style={{position:'relative'}} alt="..." />
-                                            <div style={{position:'absolute',top:'3%',right:'10%'}}><i class="fa-brands fa-gratipay bg-white rounded-circle" style={{fontSize:'30px'}}></i></div>
+                                        <div class="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', background: '#F5F7FA' }}>
+                                            <img src={e.ImageUrl} class="card-img-top" height="110px" style={{ position: 'relative' }} alt="..." />
                                             <div class="card-body d-flex flex-column ">
-                                                <span className='text-danger'> Product Name:-</span>
-                                                <span class="card-title">{e.title}</span>
-                                                <span>Price:-</span><span>{e.price * 84} Ruppes</span>
-                                                <small>{e.description}</small>
+                                                <h6 class="card-title">{e.Product_Name.Product_Name}</h6>
+                                                <span className='text-success'><i class="fa-solid fa-indian-rupee-sign mr-2"></i>{e.Product_Name.Price}</span>
                                             </div>
                                             <div className="card-footer" style={{ height: '50px' }}>
-                                            <span className='btn btn-primary col-10 mb-2' >Buy Now<i class="fa-solid fa-cart-plus ml-2"></i></span>
+                                                <span className='btn btn-primary col-10 mb-2' onClick={()=>{navigate('/Dis',{state:{data:e}})}} >Buy Now<i class="fa-solid fa-cart-plus ml-2"></i></span>
                                             </div>
                                         </div>
                                     </div>

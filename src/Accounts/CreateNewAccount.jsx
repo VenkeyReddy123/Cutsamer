@@ -10,7 +10,7 @@ const CreateNewAccount = () => {
     const Pref=useRef(null)
     const Rpref=useRef(null)
     const HandleSubmit=(e)=>{
-        e.preventDefault()
+
         const name=Nref.current.value
         const email=Eref.current.value
         const number=Mref.current.value
@@ -24,6 +24,11 @@ const CreateNewAccount = () => {
         }
         if(pass==rpass){
                   axios.post('http://127.0.0.1:8000/LoginDetails/',Data)
+                  .then((d)=>{
+                    console.log(d.data)
+                  }).catch((e)=>{
+                    console.log('error')
+                  })
         }
         else{
             alert('password And Repass Not Mached')
@@ -33,7 +38,12 @@ const CreateNewAccount = () => {
         <>
             <div className='container-fluid' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', overflowX: 'hidden' }}>
                 <span className='mt-3 text-warning'> <i className="fa-solid fa-user text-danger mr-2 rounded-circle"></i>Create New Account</span>
-                <form onSubmit={HandleSubmit} className='form-group shadow mt-5' style={{ background: '#092C9C', borderRadius: '50px', maxWidth: '400px', width: '90%' }} >
+                <form onSubmit={(e)=>{
+                    e.preventDefault()
+                    HandleSubmit()
+                    navigate("/")
+
+                }} className='form-group shadow mt-5' style={{ background: '#092C9C', borderRadius: '50px', maxWidth: '400px', width: '90%' }} >
 
                     <div className='mt-3 mx-3'>
                         <label htmlFor="fn" className='form-label text-white'>Full Name<span style={{ color: 'red' }}>*</span></label>
