@@ -17,37 +17,47 @@ import Book from "./Delivary/Book";
 import img1 from './HomeComponents/Assets/img1.jpg'
 import img2 from './HomeComponents/Assets/img2.jpeg'
 import img3 from './HomeComponents/Assets/img3.jpeg'
+import DesignHome from "./DesignHome";
+import Forget from "./Forget";
 
 
 function App() {
+  const val=localStorage.getItem('email')?'safag':''
+  if(val){
+    localStorage.setItem('request','sdfesrg')
+  }
+  else{
+    localStorage.setItem('request','')
+  }
   return (
-    <div className="App">
-  
-      {/* <BrowserRouter>
-        <Routes>
+    <div className="App">  
+    <BrowserRouter>
+      <Routes>
+        
 
          
-        
-        </Routes>
-      </BrowserRouter> */}
-      <BrowserRouter>
-      <Routes>
-          <Route path='/' element={<Login />}></Route>
+          {localStorage.getItem('request')?<Route path='/' element={<HomePage/>}/>:<Route path='/' element={<Login/>}/>}
+          
           <Route path='/Reg' element={<CreateNewAccount />} />
           <Route path='/Home' element={<HomePage />} />
           <Route path='/Product' element={<Product_Filters />} />
           <Route path='/Addcard' element={<AddCard />} />
           <Route path='/Orders' element={<Order/>} />
           <Route path='/Dis' element={<ProductDisplay/>}/>
-          <Route path='/Add' element={<Adress/>}/>
           <Route path='/Check' element={<Checking/>}/>
           <Route path='/Pay' element={<Payment/>}/>
-          <Route path='/Orders' element={<Order/>}/>
+          <Route path='/Order' element={<Order/>}/>
           <Route path='/Book' element={<Book/>}/>
+          <Route path='/For' element={<Forget/>}/>
       </Routes>
       </BrowserRouter>
+      {/* <>
+          <DesignHome/>
+      </> */}
     
+<>
 
+</>
     </div>
   );
 }

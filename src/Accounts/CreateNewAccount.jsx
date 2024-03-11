@@ -22,18 +22,22 @@ const CreateNewAccount = () => {
             "Custamer_Name":name,
             "Password":pass 
         }
-        if(pass==rpass){
-                  axios.post('http://127.0.0.1:8000/LoginDetails/',Data)
-                  .then((d)=>{
-                    console.log(d.data)
-                  }).catch((e)=>{
-                    console.log('error')
-                  })
+        if (pass === rpass) {
+            if (String(number).length === 10) {
+                axios.post('http://127.0.0.1:8000/LoginDetails/', Data)
+                    .then((d) => {
+                        alert('Created Done');
+                        navigate('/');
+                    }).catch((e) => {
+                        alert("Please Try Again");
+                    });
+            } else {
+                alert('Please Enter 10 digits for your number');
+            }
+        } else {
+            alert('Password and Re-entered Password do not match');
         }
-        else{
-            alert('password And Repass Not Mached')
-        }
-    }
+    }        
     return (
         <>
             <div className='container-fluid' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', overflowX: 'hidden' }}>
@@ -41,7 +45,6 @@ const CreateNewAccount = () => {
                 <form onSubmit={(e)=>{
                     e.preventDefault()
                     HandleSubmit()
-                    navigate("/")
 
                 }} className='form-group shadow mt-5' style={{ background: '#092C9C', borderRadius: '50px', maxWidth: '400px', width: '90%' }} >
 

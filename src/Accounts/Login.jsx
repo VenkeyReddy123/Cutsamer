@@ -14,20 +14,27 @@ function Login() {
     axios.get("http://127.0.0.1:8000/LoginDetails/")
       .then((response) => {
         let data = response.data;
+       
         for (let entry of data) {
-          console.log(entry)
+
           if (entry.Email === Em && entry.Password === Pas) {
             setIsLoggedIn(true);
+            alert(entry.id)
+            localStorage.setItem('id',entry.id)
+            localStorage.setItem('CustamerName',entry.Custamer_Name)
             localStorage.setItem('email', entry.Email );
             localStorage.setItem('password',entry.Password);
             navigate('/Home'); // Navigate to Home page upon successful login
-            return; // Exit the loop if login is successful
-          }
+           
+          } 
         }
-        console.log("Login failed. Email or password incorrect");
+        if(!isLoggedIn){
+          alert('Please Try')
+        }
       })
       .catch((error) => {
-        console.log(error);
+
+        
       });
   }
 
@@ -54,7 +61,8 @@ function Login() {
         </div>
 
         <div className='mx-3'>
-          <h6 className='text-success ml-2 mb-2'>Don't have an account? <span className='text-light' onClick={() => { navigate('/Reg') }} >Register here</span></h6>
+          <h6 style={{cursor:'pointer'}} className='text-success ml-2 mb-2'>Don't have an account? <span className='text-light' onClick={() => { navigate('/Reg') }} >Register here</span></h6>
+          <h6 style={{cursor:'pointer'}} className='text-success ml-2 mb-2'>For Get Password? <span className='text-light' onClick={() => { navigate('/For') }} >Reset Password</span></h6>
         </div>
       </form>
     </div>

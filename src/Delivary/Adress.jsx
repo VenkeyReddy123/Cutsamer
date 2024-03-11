@@ -1,12 +1,18 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-const Adress = () => {
+const Adress = ({Display}) => {
+  
+  
+  const [DisAdd,setDisAdd]=useState(false)
+  const [Dislist,setDisList]=useState(true)
+  const[DisButton,setDisButton]=useState(true)
+  let Arr=[]
   const Location=useLocation()
   const Data=Location.state.Product
-  console.log(Data)
   const navigate=useNavigate()
-
+  
+  const [List,setList]=useState([])
   const Full=useRef()
   const Mn=useRef()
   const Pin=useRef()
@@ -14,65 +20,108 @@ const Adress = () => {
   const Ci=useRef()
   const Ho=useRef()
   const Ro=useRef()
-  const HandleSubmit=()=>{
-        const Address={
-             "Name":Full.current.value,
-             "Number":Mn.current.value,
-             "Pin":Pin.current.value,
-             "State":Sta.current.value ,
-             "City":Ci.current.value,
-             "House":Ho.current.value,
-             "Road":Ro.current.value
+  const HandleSubmit = () => {
+    let addresses = [localStorage.getItem('Address')]
+    console.log(addresses)
+    let addressArr = [];
 
+    if (addresses) {
+        try {
+            addressArr = JSON.parse(addresses);
+        } catch (error) {
+            console.error("Error parsing addresses from localStorage:", error);
+            // Handle parsing error if necessary
         }
-        navigate('/Check',{state:{Product:Data,Add:Address}})
-  }
+    }
+
+    const Address = {
+        "Name": Full.current.value,
+        "Number": Mn.current.value,
+        "Pin": Pin.current.value,
+        "State": Sta.current.value,
+        "City": Ci.current.value,
+        "House": Ho.current.value,
+        "Road": Ro.current.value
+    };
+
+    addressArr.push(Address);
+
+    localStorage.setItem('Address', JSON.stringify(addressArr)); // Use 'addresses' key here
+    console.log(JSON.stringify(addressArr))
+    localStorage.setItem('Address2', JSON.stringify(Address))
+
+    // Optionally, you might want to retrieve the updated addresses from localStorage again
+    // const updatedAddresses = JSON.parse(localStorage.getItem('addresses'));
+    Display()
+    // navigate('/Check')
+    // navigate('/Check',{state:{Product:Data,Add:Address}})
+}
+
+  useEffect(() => {
+    const Address = localStorage.getItem('Address');
+    
+     // Corrected typo
+     // Declare outside to ensure it's accessible outside the if block
+    if (Address) {
+        try {
+           Arr=[...JSON.parse(Address)]
+           setList(Arr)
+                
+           
+        } catch (error) {
+          alert('jj')
+        
+          
+            // console.error("Error parsing Address from localStorage:", error);
+            // Handle parsing error if necessary
+        }
+     
+    }
+    else{
+      setDisAdd(!DisAdd)
+      setDisList(!Dislist) 
+      setDisButton(!DisButton)
+    }
+    // Now you can use Arr here or do whatever you need to do with it
+}, []);
+
   return (
 
     <>
-      {/*  */}
-      <nav>
-        <div className='d-flex flex-row justify-content-between col-12 flex-wrap' style={{ background: '#F5F7FA', overflowX: 'hidden' }}>
-          <div className='d-md-col-1'>
-            <h5 className='p-3'>ECommer</h5>
-          </div>
-          <div className='p-2 d-col-7'>
-            <input type="text" className='form-control' placeholder='Search.....' style={{ borderRadius: '50px' }} />
-          </div>
-          <div className='flex flex-row justify-content-between p-2 d-md-2 '>
-            <i style={{ fontSize: '25px' }} className="fa-solid fa-magnifying-glass mr-2 p-2 text-dark"></i>
-            <i className="fa-solid fa-cart-shopping p-2 text=dark" style={{ fontSize: '25px' }}></i>
-          </div>
-        </div>
-      </nav>
-      {/*  */}
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Home Page</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+     
+    {/* {Arr&&Arr.map((Add,ind)=>{
+      // console.log(Add)
+      return(
+        <>  
+            <p>{ind}</p>
+            <span style={{ fontWeight: 'bold' }} className='text-primary'>{Add.Name}</span>
+            <span style={{ fontWeight: 'bold' }} className='text-dark'>{Add.House}{Add.Road}<br></br>{Add.State}{Add.City},Pin:-{Add.Pin}</span>
+             
+        </>
+      )
+    })} */}
+    {Dislist&&List&&List.map((Add,ind)=>{
+        return(
+          <>  
+              {/* <p>{ind}</p> */}
+             <div className='mt-2  mr-1 ' style={{textWrap:'wrap',overflowX:'hidden'}}>
+             <span style={{ fontWeight: 'bold' }} className='text-primary'>{Add.Name}</span><br></br>
+              <span style={{ fontWeight: 'bold' }} className='text-dark'>{Add.House}<br></br>{Add.Road}<br></br>{Add.State}{Add.City},<br></br>Pin:-{Add.Pin}</span><br></br>
+             </div>
+             <button className='btn-info' onClick={()=>{
+              localStorage.setItem('Address2', JSON.stringify(Add))
+              Display()}}>Select<i class="fa-solid fa-check ml-2 text-dark"></i></button>
 
-        <div class="collapse navbar-collapse " id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" onClick={() => { navigate('/Home') }}>Home<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link" onClick={() => { navigate('/Product') }} >Products</a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link " onClick={() => { navigate('/Addcard') }}>Addcards</a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link" onClick={() => { navigate('/Order') }}>Orders</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
+          </>
+        )
+    })}
+    <br></br>
+    {DisButton&&<button className='mt-2' onClick={()=>{setDisAdd(!DisAdd)
+    setDisList(!Dislist)
+    setDisButton(!DisButton)
+    }}>Addnew Adress</button>}
 
-      {/*  */}
-
-      <div className='container-fluid' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', overflowX: 'hidden' }}>
+    {DisAdd&&<div className='container-fluid' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', overflowX: 'hidden' }}>
         <span className='mt-3 text-warning'> <i className="fa-solid fa-user text-danger mr-2 rounded-circle"></i>Give Adress For Delivary Prodict</span>
         <form onSubmit={(e)=>{e.preventDefault()
            HandleSubmit()
@@ -105,11 +154,11 @@ const Adress = () => {
             <input type="text" className='form-control mt-3' placeholder='Road Name,Area,COlony (Required)*' ref={Ro}  required />
           </div>
 
-          <div className='text-center mt-4'>
+          <div className='text-center mt-2'>
             <input type="submit" value="Save Adress" className='btn btn-primary mb-2 mt-2 col-9 bg-danger'  />
           </div>
         </form>
-      </div>
+      </div>}
     </>
   )
 }

@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Mobile_Data } from './Data/Mobile_Data'
 import { useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import ResizedImage from './HomeComponents/ResizedImage'
+import Navbar from './HomeComponents/Navbar'
+import DSidebar from './DSidebar'
+import Countdown from './Countdown'
+import RandomNumberGenerator from './RandomRating'
+
+
 
 class TruncateWords extends React.Component {
     truncateWords = (text, maxLength) => {
@@ -18,24 +25,36 @@ class TruncateWords extends React.Component {
     }
 }
 
+
 const ProductDisplay = () => {
+    const Cat = ['Electronics', 'Fashion', 'Home&Garden', 'Health', 'Books', 'Sports', 'Toys', 'Automotive', 'Jewelry&Accessories']
     const Location = useLocation()
     const Data2 = Location.state.data
-    console.log(Data2)
     const navigate = useNavigate()
     const Data = Mobile_Data[6]
     const [count, SetCount] = useState(1)
     const [Data3, setData2] = useState(null)
+    const [OnClick, setOnClick] = useState(false);
+    const Callback = () => {
+        setOnClick(!OnClick)
+
+    }
     useEffect(() => {
         axios.get("http://127.0.0.1:8000/ProductDispalyView/").then((d) => {
-            setData2(d.data)
+            // setData2(d.data)
+            const Filter=d.data.filter((e)=>{
+                return Data2.Product_Name.Category==e.Product_Name.Category
+            })
+
+            setData2(Filter)
         }).catch((e) => {
             alert('Please Try AGian Later Somthing Eroor')
         })
 
-    }, [])
+    }, [Data3])
     const AddCard=(e)=>{
         const email=localStorage.getItem('email')
+        console.log(e)
        const Data={
         
             "Custamer_Name":email,
@@ -47,46 +66,21 @@ const ProductDisplay = () => {
              alert('Already Added/Network Issuse Please Try Again lAtes')
          })
     }
+    const [DSide,setDSide]=useState(false)
+    const DisplySidebar=()=>{
+        
+        setDSide(!DSide)
+    }
+    
+    
     return (
         <>
-            {/*  */}
-            <nav>
-                <div className='d-flex flex-row justify-content-between col-12 flex-wrap' style={{ background: '#F5F7FA', overflowX: 'hidden' }}>
-                    <div className='d-md-col-1'>
-                        <h5 className='p-3'>ECommer</h5>
-                    </div>
-                    <div className='p-2 d-col-7'>
-                        <input type="text" className='form-control' placeholder='Search.....' style={{ borderRadius: '50px' }} />
-                    </div>
-                    <div className='flex flex-row justify-content-between p-2 d-md-2 '>
-                        <i style={{ fontSize: '25px' }} className="fa-solid fa-magnifying-glass mr-2 p-2 text-dark"></i>
-                        <i className="fa-solid fa-cart-shopping p-2 text=dark" style={{ fontSize: '25px' }}></i>
-                    </div>
-                </div>
-            </nav>
+           
             {/*  */}
             <nav class="navbar navbar-expand-lg navbar-light bg-light mt-3">
-                <a class="navbar-brand" href="#">Home Page</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse " id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" onClick={() => { navigate('/Home') }}>Home<span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" onClick={() => { navigate('/Product') }} >Products</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link " onClick={() => { navigate('/Addcard') }}>Addcards</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" onClick={() => { navigate('/Order') }}>Orders</a>
-                        </li>
-                    </ul>
-                </div>
+               
+            <Navbar Callback={Callback} DisplySidebar={DisplySidebar} />
+                
             </nav>
             {/*  */}
 
@@ -94,27 +88,42 @@ const ProductDisplay = () => {
             <div>
                 <div className='d-md-flex d-xl-flex  flex-md-row  flex-xl-row mt-5 ml-2 mr-2 ' style={{ overflowX: 'hidden' }}>
 
-                    <div className='col-md-6 col-lg-6 card border  mt-2' style={{ height: '400px', marginBottom: '30px' }}>
-                        <div className='container text-center mt-2'>
-                        <img src={Data2.ImageUrl} alt={Data2.Product_Name.Product_Name} height={'85%'} />
+                    <div className='col-md-6 col-lg-6 card   mt-2' style={{ height: '400px', marginBottom: '30px' }}>
+                        <div className='text-center mt-2' style={{overflow:'hidden'}}>
+                        {/*  */}
+                        <img src={Data2.ImageUrl} alt={Data2.Product_Name.Product_Name} height={300}  />
+                        {/* <ResizedImage imageUrl={Data2.ImageUrl} height={'300px'} width={'200px'}/> */}
+                        {/* <ResizedImage imageUrl={Data2.ImageUrl} height={350}  /> */}
                         </div>
+                        
                         <div className='d-flex flex-row justify-content-center mt-2  '>
-                            <button onClick={() => { AddCard(Data2)}} className='col-5 ml-auto p-2 border-danger text-danger d-flex flex-row justify-content-around bg-light ' style={{ borderRadius: '50px' }}> <i class="fa-solid fa-heart-circle-check mt-1"></i><span>Add To Card</span></button>
-                            <button onClick={() => { navigate('/Add',{state:{Product:Data2}}) }} className='col-5 ml-auto border-danger text-danger d-flex flex-row justify-content-around' style={{ borderRadius: '50px' }}><i className="fa-solid fa-cart-shopping mt-2"></i><span className='mt-1'>Buy Now</span></button>
+                            <button  onClick={() => { AddCard(Data2)}} className='col-5 ml-auto p-2  text-white d-flex flex-row justify-content-around  ' style={{background:'#FF9F00'}}> <i class="fa-solid fa-heart-circle-check mt-1"></i><span>Add To Card</span></button>
+                            <button onClick={() => { navigate('/Check',{state:{Product:Data2}}) }} className='col-5 ml-auto  text-white d-flex flex-row justify-content-around' style={{ background:'#FB641B' }}><i className="fa-solid fa-cart-shopping mt-2"></i><span className='mt-1'>Buy Now</span></button>
                         </div>
                     </div>
                     <div className=' col-md-6 col-lg-6 border border-info mt-2 ' style={{ height: '400px', marginBottom: '30px' }}>
                         <h6>
-                            <span className='h5 text-danger d-inline-block w-100 text-wrap text-break'>{Data2.Product_Name.Product_Name}</span>
+                            <span className='h5 text-dark d-inline-block w-100 text-wrap text-break'>{Data2.Product_Name.Product_Name}</span>
                         </h6>
-
-                        <div className='d-flex flex-row align-center'>
-                            <h3>Price:-</h3>
-                            <p className='h5 text-primary' style={{ fontSize: '30px' }}><i class="fa-solid fa-indian-rupee-sign mr-2 "></i>{Data2.Product_Name.Price}</p>
-                            <p className='ml-2 text-danger ml-3'><del style={{ fontSize: '30px' }}><i class="fa-solid fa-indian-rupee-sign mr-2"></i>{Data2.Product_Name.Price * 2}</del></p>
+                        <div style={{display:'inline-block'}}>
+                              <RandomNumberGenerator/>
                         </div>
-                        <h6 className='text-primary' style={{ fontSize: '25px' }}>Rating is <span className='text-dark'>{Data.rating}<i class="fa-solid fa-star"></i></span> Out of 5</h6>
-                        <h5 className='text-primary'>Special offer ends in 23:00:45 hours</h5>
+                         <div>
+                            <span className='text-success mr-2'>Saving Amount<span className='text-success ml-2'><i class="fa-solid fa-indian-rupee-sign mr-2"></i>{Math.trunc((Data2.Product_Name.Price*(Data2.Product_Name.Discount/100)))}</span></span>
+                         </div>
+                        <div className='d-flex flex-row align-center'>
+                         
+                        <span className='text-dark' style={{fontSize:'25px'}}><i class="fa-solid fa-indian-rupee-sign mr-2"></i>{Math.trunc(Data2.Product_Name.Price-(Data2.Product_Name.Price*(Data2.Product_Name.Discount/100)))}</span> <span className='text-dark mt-auto mb-auto ml-3'><del><i class="fa-solid fa-indian-rupee-sign mt-2"></i>{Data2.Product_Name.Price}</del></span ><span className='text-danger ml-2'></span><span className='text-success mt-auto mb-auto'>{Data2.Product_Name.Discount}%Off</span>
+                        </div>
+                        
+                        <div>
+                           
+                          
+                          
+                        </div>
+                       <div className='d-flex flex-row'>
+                       <h5 className='text-primary'>Special offer ends in </h5><h5 className='text-danger'><Countdown/></h5>
+                       </div>
                         <div className='mt-2'>
                             <h5>Quantity</h5>
                             <div className='d-flex flex-row text-center mt-2 mb-2'>
@@ -130,19 +139,20 @@ const ProductDisplay = () => {
             </div>
 
             <div className='d-flex flex-column' style={{ overflowX: 'hidden' }}>
-                <h5 className='p-3 text-primary'><i className="fa-solid fa-hashtag p-2 text-warning"></i>Top Deals Today</h5>
+                <h5 className='p-3 text-primary'><i className="fa-solid fa-hashtag p-2 text-warning"></i>Suggest For You</h5>
                 <div className='d-flex flex-row  col-12 ' style={{ overflowX: 'auto' }}>
-                    {Data3 && Data3.slice(25, 33).map((e, ind) => {
+                    {Data3 && Data3.slice(0,7).map((e, ind) => {
                         return (
                             <>
                                 <div key={ind} className=' card col-8  col-md-4 col-xl-2 mr-4 ml-3' style={{ height: '300px', borderRadius: '50px' }}>
                                     <div className='card-body' style={{ height: '150px', marginTop: '-10px' }}>
-                                        <img className='shadow' src={e.ImageUrl} alt={e.Product_Name.Product_Name} width={'100%'} height={'150px'} style={{ borderRadius: '10px' }} />
+                                        {/* <img className='shadow' src={e.ImageUrl} alt={e.Product_Name.Product_Name} width={'150px'} height={'150px'}  style={{ borderRadius: '10px' }} /> */}
+                                        <ResizedImage imageUrl={e.ImageUrl} height={150} width={150} />
                                     </div>
                                     <div className='card-body' onClick={() => { navigate("/Dis", { state: { data: e } }) }} >
                                         <h6 className='text-primary'><TruncateWords text={e.Product_Name.Product_Name} maxLength={20}
                                         /></h6>
-                                        <span className='text-success'><i class="fa-solid fa-indian-rupee-sign mr-2"></i>{e.Product_Name.Price}</span>
+                                        <span className='text-dark'><del><i class="fa-solid fa-indian-rupee-sign mr-2"></i>{e.Product_Name.Price}</del></span ><span className='text-danger ml-2'>{e.Product_Name.Discount}%Off</span><span className='text-success'><i class="fa-solid fa-indian-rupee-sign mr-2"></i>{Math.trunc(e.Product_Name.Price-(e.Product_Name.Price*(e.Product_Name.Discount/100)))}only</span>
                                     </div>
 
                                 </div>
@@ -152,6 +162,22 @@ const ProductDisplay = () => {
 
                 </div>
 
+            </div>
+            {OnClick && <div className='col-sm-10 col-md-6 col-lg-3' style={{ height: '100%', position: 'absolute', top: '175px', left: '-20px', overflow: 'hidden' }} >
+                {Cat.slice().reverse().map((e, index) => { // Reversing the order of mapped elements
+                    return (
+                        <div key={index} className='card-footer text-start ml-2' style={{ height: '55px', background: '#2457AA', cursor: 'pointer', transitionDelay: `${index * 0.1}s` }} >
+                            <div className='d-flex flex-row'>
+                                <i className="fa-solid fa-arrow-right mt-2  mr-3 text-light" style={{ fontSize: '30px' }}></i>
+                                <h5 className='mt-2 text-light' onClick={() => { navigate("/Product", { state: { Cat: e } }) }}>{e}</h5>
+                            </div>
+                        </div>
+                    )
+                })}
+                {/* <Carosels/>  */}
+            </div>}
+            <div className={`bg-dark ${DSide?'dside':'ddside'}`} style={{ height: '65vh', position: 'absolute', top: '24%', right: '0px', overflow: 'hidden'}}>
+              <DSidebar/>
             </div>
 
 
